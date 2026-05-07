@@ -1,0 +1,38 @@
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    padding: 20px; 
+    background-color: #f4f7f6; 
+}
+
+.container { 
+    max-width: 600px; 
+    margin: auto; 
+    background: white; 
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+}
+
+select, input, button { 
+    width: 100%; 
+    padding: 10px; 
+    margin: 10px 0; 
+    border-radius: 5px; 
+    border: 1px solid #ddd; 
+}
+
+.result-box { 
+    background: #e7f3ff; 
+    padding: 15px; 
+    border-radius: 5px; 
+    display: none; 
+    border-left: 5px solid #2196F3; 
+}
+
+.tips { 
+    font-style: italic; 
+    color: #555; 
+    margin-top: 10px; 
+    border-top: 1px solid #ccc; 
+    padding-top: 10px; 
+}
