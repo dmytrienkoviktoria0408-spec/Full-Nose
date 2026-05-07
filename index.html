@@ -2,77 +2,98 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Ситий Носик</title>
+    <title>Full Nose</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h1>Проєкт "Ситий Носик"</h1>
-    <p>Виберіть вашого улюбленця:</p>
-    <select id="petType">
+    <h1>Full Nose</h1>
 
-    <optgroup label="Гризуни">
-        <option value="degu">Дегу</option>
-        <option value="hamster">Хом'як</option>
-        <option value="guinea_pig">Морська свинка</option>
-        <option value="chinchilla">Шиншила</option>
-        <option value="rabbit">Кролик</option>
-        <option value="rat">Щур</option>
-    </optgroup>
+    <div id="navigationStep1">
+        <select id="petType">
+            <option value="">Оберіть вашу тваринку</option>
 
-    <optgroup label="Ссавці">
-        <option value="cat">Кіт</option>
-        <option value="dog">Собака</option>
-        <option value="ferret">Тхір (Фретка)</option>
-        <option value="hedgehog">Їжак (африканський)</option>
-        <option value="sugar_glider">Цукрова сумчаста летяга</option>
-    </optgroup>
+            <optgroup label="Гризуни">
+                <option value="degu">Дегу</option>
+                <option value="hamster">Хом'як</option>
+                <option value="guinea_pig">Морська свинка</option>
+                <option value="chinchilla">Шиншила</option>
+                <option value="rabbit">Кролик</option>
+                <option value="rat">Щур</option>
+            </optgroup>
 
-    <optgroup label="Птахи">
-        <option value="parrot">Папуга</option>
-        <option value="canary">Канарка</option>
-        <option value="finch">Амадина</option>
-        <option value="pigeon">Голуб</option>
-    </optgroup>
+            <optgroup label="Ссавці">
+                <option value="cat">Кіт</option>
+                <option value="dog">Собака</option>
+                <option value="ferret">Тхір (Фретка)</option>
+                <option value="hedgehog">Їжак (африканський)</option>
+                <option value="sugar_glider">Цукрова сумчаста летяга</option>
+            </optgroup>
 
-    <optgroup label="Рептилії та амфібії">
-        <option value="turtle">Черепаха</option>
-        <option value="lizard">Ящірка (еублефар, агама)</option>
-        <option value="snake">Змія</option>
-        <option value="axolotl">Аксолотль</option>
-        <option value="frog">Жаба</option>
-    </optgroup>
+            <optgroup label="Птахи">
+                <option value="parrot">Папуга</option>
+                <option value="canary">Канарка</option>
+                <option value="finch">Амадина</option>
+                <option value="pigeon">Голуб</option>
+            </optgroup>
 
-        <optgroup label="Риби та акваріумні жителі">
-        <option value="goldfish">Золота рибка</option>
-        <option value="betta">Півник</option>
-        <option value="guppy">Гуппі</option>
-        <option value="shrimp">Креветка</option>
-        <option value="snail">Равлик (ахатина)</option>
-    </optgroup>
+            <optgroup label="Рептилії та амфібії">
+                <option value="turtle">Черепаха</option>
+                <option value="lizard">Ящірка (еублефар, агама)</option>
+                <option value="snake">Змія</option>
+                <option value="axolotl">Аксолотль</option>
+                <option value="frog">Жаба</option>
+            </optgroup>
 
-    <optgroup label="Екзотичні комахи та павукоподібні">
-        <option value="tarantula">Павук-птахоїд</option>
-        <option value="stick_insect">Паличник</option>
-        <option value="ant_farm">Мурашина ферма</option>
-    </optgroup>
-    </select>
+            <optgroup label="Риби та акваріумні жителі">
+                <option value="goldfish">Золота рибка</option>
+                <option value="betta">Півник</option>
+                <option value="guppy">Гуппі</option>
+                <option value="shrimp">Креветка</option>
+                <option value="snail">Равлик (ахатина)</option>
+            </optgroup>
 
-    <div id="setupStep" style="display:none;">
-        <p>Вага тварини (у грамах):</p>
-        <input type="number" id="petWeight" placeholder="Наприклад: 250">
-        <button onclick="calculateDiet()">Розрахувати раціон</button>
+            <optgroup label="Екзотичні комахи та павукоподібні">
+                <option value="tarantula">Павук-птахоїд</option>
+                <option value="stick_insect">Паличник</option>
+                <option value="ant_farm">Мурашина ферма</option>
+            </optgroup>
+            </select>
+
+        <br><br>
+        <button onclick="goToWeightStep()" style="background-color: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            Далі →
+        </button>
+    </div><div id="setupStep" style="display: none; margin-top: 20px;">
+        <button onclick="goBackToPetSelection()" style="background-color: #ccc; border: none; padding: 5px 10px; margin-bottom: 10px; cursor: pointer;">
+            ← Назад до вибору
+        </button>
+        
+        <p>Введіть вагу (в грамах):</p>
+        <input type="number" id="petWeight" placeholder="300">
+        <button onclick="calculateDiet()" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            Розрахувати
+        </button>
+
+        <div id="results" style="display: none; margin-top: 20px;">
+            <p id="foodAmount"></p>
+            <p id="vetTips"></p>
+            
+            <hr>
+            <input type="text" id="productSearch" placeholder="Перевірити продукт...">
+            <button onclick="checkSafety()">Перевірити</button>
+            
+            <div id="safetyResult" style="display: none;"></div> 
+            
+            <div id="treatSection" style="display: none;">
+                <p id="treatCount"></p>
+                <button onclick="giveTreat()" style="background-color: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                    🍭 Дати смаколик
+                </button>
+            </div>
+        </div>
     </div>
-
-    <div id="results" class="result-box">
-        <h3>Результати для вашого улюбленця:</h3>
-        <p id="foodAmount"></p>
-        <p id="portions"></p>
-        <div class="tips" id="vetTips"></div>
-    </div>
-</div>
-
-<script src="data.js"></script>
+</div><script src="data.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

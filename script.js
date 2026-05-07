@@ -72,7 +72,6 @@ function calculateDiet() {
     resBox.style.display = 'block';
 }
 
-// ОНОВЛЕНА ФУНКЦІЯ ПЕРЕВІРКИ БЕЗПЕКИ
 function checkSafety() {
     const petType = document.getElementById('petType').value;
     const product = document.getElementById('productSearch').value.toLowerCase().trim();
@@ -157,4 +156,37 @@ function updateTreatDisplay(petType) {
             giveTreatBtn.disabled = false;
         }
     }
+}
+function goToWeightStep() {
+
+const type = document.getElementById('petType').value;
+
+if (type === "") {
+
+alert("Будь ласка, спочатку оберіть тваринку!");
+
+return;
+
+}
+
+document.getElementById('navigationStep1').style.display = 'none';
+
+document.getElementById('setupStep').style.display = 'block';
+
+}
+
+
+
+function goBackToPetSelection() {
+
+document.getElementById('setupStep').style.display = 'none';
+
+document.getElementById('navigationStep1').style.display = 'block';
+
+document.getElementById('results').style.display = 'none';
+
+document.getElementById('safetyResult').style.display = 'none';
+
+document.getElementById('treatSection').style.display = 'none';
+
 }
