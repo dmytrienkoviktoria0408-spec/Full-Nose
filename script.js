@@ -5,6 +5,7 @@ function showInput() {
     } else {
         document.getElementById('setupStep').style.display = 'none';
         document.getElementById('results').style.display = 'none';
+        document.getElementById('safetyResult').style.display = 'none';
     }
 }
 
@@ -70,4 +71,39 @@ function calculateDiet() {
     document.getElementById('foodAmount').innerHTML = `<b>Денна норма їжі:</b> приблизно ${amount} г.`;
     document.getElementById('vetTips').innerText = "Порада: " + advice;
     resBox.style.display = 'block';
+}
+
+function checkSafety() {
+    const petType = document.getElementById('petType').value;
+    const product = document.getElementById('productSearch').value.toLowerCase().trim();
+    const resultDiv = document.getElementById('safetyResult');
+
+    if (!petType) {
+        alert("Спочатку оберіть тварину зі списку вище!");
+        return;
+    }
+
+    if (!product) {
+        alert("Введіть назву продукту.");
+        return;
+    }
+
+    if (window.safetyData && safetyData[petType] && safetyData[petType][product]) {
+        const item = safetyData[petType][product];
+        
+        let color = "#e2e3e5";
+        if (item.status === "safe") color = "#d4edda";
+        if (item.status === "danger") color = "#f8d7da";
+        if (item.status === "warning") color = "#fff3cd";
+
+        resultDiv.style.backgroundColor = color;
+        if (item) {
+        resultDiv.innerHTML = `<strong>${product.toUpperCase()}:</strong> ${item.info}`;
+    } else {
+        resultDiv.style.backgroundColor = "#e2e3e5";
+        resultDiv.innerHTML = `На жаль, у нас немає даних <b>${product}</b> саме для цієї тварини.`;
+    }
+    
+    resultDiv.style.display = "block";
+}
 }
