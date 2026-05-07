@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Ситий Носик</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f7f6; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        select, input, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ddd; }
+        .result-box { background: #e7f3ff; padding: 15px; border-radius: 5px; display: none; }
+        .tips { font-style: italic; color: #555; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Проєкт "Ситий Носик"</h1>
+    <p>Виберіть вашого улюбленця:</p>
+    <select id="petType">
+        <option value="">-- Оберіть тварину --</option>
+        <option value="degu">Дегу</option>
+        <option value="cat">Кіт</option>
+        <option value="dog">Собака</option>
+        <option value="hamster">Хом'як</option>
+    </select>
+    <div id="setupStep" style="display:none;">
+        <p>Вага тварини (у грамах):</p>
+        <input type="number" id="petWeight" placeholder="Наприклад: 250">
+        <button onclick="calculateDiet()">Розрахувати раціон</button>
+    </div>
+    <div id="results" class="result-box">
+        <h3>Результати для вашого улюбленця:</h3>
+        <p id="foodAmount"></p>
+        <p id="portions"></p>
+        <div class="tips" id="vetTips"></div>
+    </div>
+</div>
+</body>
+</html>
