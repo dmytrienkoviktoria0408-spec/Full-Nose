@@ -169,3 +169,31 @@ function goBackToPetSelection() {
     document.getElementById('safetyResult').style.display = 'none';
     document.getElementById('treatSection').style.display = 'none';
 }
+function saveBathDate() {
+    const petType = document.getElementById('petType').value;
+    const lastDateValue = document.getElementById('lastBathDate').value;
+    
+    if (!lastDateValue) {
+        alert("Оберіть дату!");
+        return;
+    }
+
+    const lastDate = new Date(lastDateValue);
+    const interval = safetyData[petType].bathInterval || 7;
+    const bathType = safetyData[petType].bathType || "купання";
+
+    const nextDate = new Date(lastDate);
+    nextDate.setDate(lastDate.getDate() + interval);
+
+    const infoBox = document.getElementById('nextBathInfo');
+    infoBox.style.display = 'block';
+    
+    const options = { day: 'numeric', month: 'long' };
+    const formattedDate = nextDate.toLocaleDateString('uk-UA', options);
+
+    infoBox.innerHTML = 
+        <p>✅ Дата збережена!</p>,
+        <p>Вашому улюбленцю потрібна <b>${bathType}</b> кожні ${interval} днів.</p>,
+        <p style="color: #d32f2f;">🕒 Наступна процедура: <b>${formattedDate}</b></p>
+    ;
+}
