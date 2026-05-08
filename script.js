@@ -1,21 +1,15 @@
-function showInput() {
-    const type = document.getElementById('petType').value;
-    if (type !== "") {
-        document.getElementById('setupStep').style.display = 'block';
-    } else {
-        document.getElementById('setupStep').style.display = 'none';
-        document.getElementById('results').style.display = 'none';
-        document.getElementById('safetyResult').style.display = 'none';
-    }
-}
-
 function calculateDiet() {
     const type = document.getElementById('petType').value;
     const weight = document.getElementById('petWeight').value;
     const resBox = document.getElementById('results');
     
+    if (!type) {
+        alert("Будь ласка, оберіть тварину зі списку!");
+        return;
+    }
+
     if (!weight || weight <= 0) {
-        alert("Будь ласка, введіть коректну вагу!");
+        alert("Будь ласка, введіть коректну вагу (більше 0)!");
         return;
     }
 
@@ -52,11 +46,12 @@ function calculateDiet() {
         case 'frog': foodPercent = 0.08; advice = "Харчуються переважно живими комахами."; break;
 
         // риби та інші
-        case 'goldfish': foodPercent = 0.02; advice = "Краще недогодувати, ніж перегодувати. Схильні до ожиріння."; break;
+        case 'goldfish': foodPercent = 0.02; advice = "Краще недогодувати, ніж перегодовуйте. Схильні до ожиріння."; break;
         case 'betta': foodPercent = 0.03; advice = "Давайте стільки, скільки з'їдає за 2 хвилини. Люблять білкову їжу."; break;
         case 'guppy': foodPercent = 0.03; advice = "Їдять потроху, але часто. Підходять універсальні пластівці."; break;
         case 'shrimp': foodPercent = 0.01; advice = "Харчуються водоростями та залишками корму. Не переборщіть!"; break;
         case 'snail': foodPercent = 0.05; advice = "Потребують багато кальцію (сепія) для міцності панцира."; break;
+
         // екзотика
         case 'tarantula': foodPercent = 0.05; advice = "Їдять раз на тиждень. Слідкуйте, щоб у тераріумі не лишалося комах."; break;
         case 'stick_insect': foodPercent = 0.20; advice = "Головне — свіже листя (малина, ожина, дуб) щодня."; break;
@@ -114,10 +109,9 @@ function giveTreat() {
     const weekInMs = 7 * 24 * 60 * 60 * 1000;
     
     let treats = JSON.parse(localStorage.getItem('petTreats_' + petType)) || [];
-    
     treats = treats.filter(date => (now - date) < weekInMs);
     
-    const maxAllowed = safetyData[petType].maxTreatsPerWeek || 5;
+    const maxAllowed = (safetyData[petType] && safetyData[petType].maxTreatsPerWeek) || 5;
 
     if (treats.length >= maxAllowed) {
         alert("СТОП! На цей тиждень ліміт смаколиків для цієї тварини вичерпано.");
@@ -139,7 +133,7 @@ function updateTreatDisplay(petType) {
     const recentTreats = treats.filter(date => (now - date) < weekInMs);
     
     const count = recentTreats.length;
-    const maxAllowed = safetyData[petType].maxTreatsPerWeek || 5;
+    const maxAllowed = (safetyData[petType] && safetyData[petType].maxTreatsPerWeek) || 5;
 
     if (treatCountText) {
         treatCountText.innerHTML = `Використано смаколиків: <b>${count} з ${maxAllowed}</b> на цьому тижні.`;
@@ -152,41 +146,26 @@ function updateTreatDisplay(petType) {
             giveTreatBtn.disabled = true;
         } else {
             giveTreatBtn.style.backgroundColor = "#4CAF50";
-            giveTreatBtn.innerText = "🍭 Дати як смаколик";
+            giveTreatBtn.innerText = "🍭 Дати смаколик";
             giveTreatBtn.disabled = false;
         }
     }
 }
+
 function goToWeightStep() {
-
-const type = document.getElementById('petType').value;
-
-if (type === "") {
-
-alert("Будь ласка, спочатку оберіть тваринку!");
-
-return;
-
+    const type = document.getElementById('petType').value;
+    if (type === "") {
+        alert("Будь ласка, спочатку оберіть тваринку!");
+        return;
+    }
+    document.getElementById('navigationStep1').style.display = 'none';
+    document.getElementById('setupStep').style.display = 'block';
 }
-
-document.getElementById('navigationStep1').style.display = 'none';
-
-document.getElementById('setupStep').style.display = 'block';
-
-}
-
-
 
 function goBackToPetSelection() {
-
-document.getElementById('setupStep').style.display = 'none';
-
-document.getElementById('navigationStep1').style.display = 'block';
-
-document.getElementById('results').style.display = 'none';
-
-document.getElementById('safetyResult').style.display = 'none';
-
-document.getElementById('treatSection').style.display = 'none';
-
+    document.getElementById('setupStep').style.display = 'none';
+    document.getElementById('navigationStep1').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('safetyResult').style.display = 'none';
+    document.getElementById('treatSection').style.display = 'none';
 }

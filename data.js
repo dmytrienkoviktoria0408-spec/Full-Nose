@@ -1,4 +1,4 @@
-const safetyData = {
+window.safetyData = {
     // гризуни
     "degu": {
         maxTreatsPerWeek: 3,
