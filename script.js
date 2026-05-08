@@ -191,9 +191,9 @@ function saveBathDate() {
     const options = { day: 'numeric', month: 'long' };
     const formattedDate = nextDate.toLocaleDateString('uk-UA', options);
 
-    infoBox.innerHTML = 
-        <p>✅ Дата збережена!</p>,
-        <p>Вашому улюбленцю потрібна <b>${bathType}</b> кожні ${interval} днів.</p>,
+    infoBox.innerHTML = `
+        <p>✅ Дата збережена!</p>
+        <p>Вашому улюбленцю потрібна <b>${bathType}</b> кожні ${interval} днів.</p>
         <p style="color: #d32f2f;">🕒 Наступна процедура: <b>${formattedDate}</b></p>
-    ;
+    `;
 }
