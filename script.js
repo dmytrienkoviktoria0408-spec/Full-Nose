@@ -89,7 +89,7 @@ function checkSafety() {
         let color = "#e2e3e5";
         if (item.status === "safe") color = "#d4edda";
         if (item.status === "danger") color = "#f8d7da";
-        if (item.status === "warning") color = "#fff3cd";
+        if (item.status === "warning" || item.status === "caution") color = "#fff3cd";
 
         resultDiv.style.backgroundColor = color;
         resultDiv.innerHTML = `<strong>${product.toUpperCase()}:</strong> ${item.info}`;
