@@ -69,38 +69,48 @@ function calculateDiet() {
 
 function checkSafety() {
     const petType = document.getElementById('petType').value;
-    const product = document.getElementById('productSearch').value.toLowerCase().trim();
-    const resultDiv = document.getElementById('safetyResult');
-    const treatSection = document.getElementById('treatSection');
+    const foodInput = document.getElementById('productSearch').value.trim();
+    const resultBox = document.getElementById('safetyResult');
 
-    if (!petType || !product) {
-        alert("Оберіть тварину та введіть продукт!");
+    if (!petType || !foodInput) {
+        alert("Оберіть тварину та введіть назву продукту!");
         return;
     }
 
-    if (window.safetyData && safetyData[petType] && safetyData[petType][product]) {
-        const item = safetyData[petType][product];
-        
-        let color = "#e2e3e5";
-        if (item.status === "safe") color = "#d4edda";
-        if (item.status === "danger") color = "#f8d7da";
-        if (item.status === "warning" || item.status === "caution") color = "#fff3cd";
-
-        resultDiv.style.backgroundColor = color;
-        resultDiv.innerHTML = `<strong>${product.toUpperCase()}:</strong> ${item.info}`;
-        
-        if (item.status === "safe") {
-            treatSection.style.display = "block";
-            updateTreatDisplay(petType);
-        } else {
-            treatSection.style.display = "none";
-        }
-    } else {
-        resultDiv.style.backgroundColor = "#e2e3e5";
-        resultDiv.innerHTML = `Дані про <b>${product}</b> для цієї тварини відсутні.`;
-        treatSection.style.display = "none";
+    const petData = window.safetyData[petType];
+    
+    if (!petData || !petData.products) {
+        alert("Дані про цю тварину ще не завантажені або файл відсутній.");
+        return;
     }
-    resultDiv.style.display = "block";
+
+    const options = {
+        keys: ['name'],
+        threshold: 0.4
+    };
+
+    const fuse = new Fuse(petData.products, options);
+    const results = fuse.search(foodInput);
+
+    resultBox.style.display = 'block';
+
+    if (results.length > 0) {
+        const foodInfo = results[0].item;
+        
+        const statusColors = {
+            'safe': '#d4edda',
+            'danger': '#f8d7da',
+            'caution': '#fff3cd',
+            'warning': '#fff3cd'
+        };
+
+        resultBox.style.backgroundColor = statusColors[foodInfo.status] || '#e2e3e5';
+        
+        resultBox.innerHTML = `<strong>${foodInfo.name.toUpperCase()}:</strong> ${foodInfo.info}`;
+    } else {
+        resultBox.style.backgroundColor = "#e2e3e5";
+        resultBox.innerHTML = "На жаль, інформації про цей продукт немає в базі для цієї тварини.";
+    }
 }
 
 function giveTreat() {
@@ -179,8 +189,8 @@ function saveBathDate() {
     }
 
     const lastDate = new Date(lastDateValue);
-    const interval = safetyData[petType].bathInterval || 7;
-    const bathType = safetyData[petType].bathType || "купання";
+    const interval = window.safetyData[petType]?.bathInterval || 7;
+    const bathType = window.safetyData[petType]?.bathType || "купання";
 
     const nextDate = new Date(lastDate);
     nextDate.setDate(lastDate.getDate() + interval);
