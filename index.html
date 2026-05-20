@@ -80,8 +80,14 @@
             <p id="vetTips"></p>
             
             <hr>
-            <input type="text" id="productSearch" placeholder="Перевірити продукт...">
-            <button onclick="checkSafety()">Перевірити</button>
+        <div id="safetySection">
+            <h3>🔍 Перевірка безпечності продуктів</h3>
+            <input type="text" id="productInput" placeholder="Введіть назву продукту">
+    
+            <button onclick="checkProductSafety()" style="background-color: #2196F3; color: white;">Перевірити</button>
+    
+            <div id="safetyResult" style="display: none; margin-top: 15px; padding: 10px; border-radius: 5px;"></div> 
+</div>
             
             <div id="safetyResult" style="display: none;"></div> 
             

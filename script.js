@@ -121,7 +121,7 @@ function giveTreat() {
     let treats = JSON.parse(localStorage.getItem('petTreats_' + petType)) || [];
     treats = treats.filter(date => (now - date) < weekInMs);
     
-    const maxAllowed = (safetyData[petType] && safetyData[petType].maxTreatsPerWeek) || 5;
+    const maxAllowed = (window.safetyData[petType] && window.safetyData[petType].maxTreatsPerWeek) || 5;
 
     if (treats.length >= maxAllowed) {
         alert("СТОП! На цей тиждень ліміт смаколиків для цієї тварини вичерпано.");
@@ -143,7 +143,7 @@ function updateTreatDisplay(petType) {
     const recentTreats = treats.filter(date => (now - date) < weekInMs);
     
     const count = recentTreats.length;
-    const maxAllowed = (safetyData[petType] && safetyData[petType].maxTreatsPerWeek) || 5;
+    const maxAllowed = (window.safetyData[petType] && window.safetyData[petType].maxTreatsPerWeek) || 5;
 
     if (treatCountText) {
         treatCountText.innerHTML = `Використано смаколиків: <b>${count} з ${maxAllowed}</b> на цьому тижні.`;
@@ -179,6 +179,7 @@ function goBackToPetSelection() {
     document.getElementById('safetyResult').style.display = 'none';
     document.getElementById('treatSection').style.display = 'none';
 }
+
 function saveBathDate() {
     const petType = document.getElementById('petType').value;
     const lastDateValue = document.getElementById('lastBathDate').value;
