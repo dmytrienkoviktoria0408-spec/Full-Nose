@@ -208,3 +208,51 @@ function saveBathDate() {
         <p style="color: #d32f2f;">🕒 Наступна процедура: <b>${formattedDate}</b></p>
     `;
 }
+function* colorCycleGenerator(colors = ["#f44336", "#4caf50", "#2196f3", "#ffeb3b", "#9c27b0"]) {
+    let index = 0;
+    while (true) {
+        yield colors[index];
+        index = (index + 1) % colors.length;
+    }
+}
+
+async function consumeWithTimeoutUI(iterator, seconds, outputElement) {
+    const timeoutMs = seconds * 1000;
+    const startTime = Date.now();
+    let count = 1;
+
+    outputElement.style.display = 'block';
+    outputElement.innerHTML = "⏳ Розпочато виконання...";
+    outputElement.style.backgroundColor = "#ffffff";
+    outputElement.style.color = "#000000";
+
+    while (Date.now() - startTime < timeoutMs) {
+        const { value } = iterator.next();
+        
+        const currentTime = new Date().toLocaleTimeString('uk-UA');
+
+        outputElement.style.backgroundColor = value;
+        outputElement.style.color = (value === "#ffeb3b") ? "#000" : "#fff"; 
+        outputElement.innerHTML = `🌈 Ітерація №${count}<br>Значення (колір): ${value}<br>Час: ${currentTime}`;
+
+        count++;
+        
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    
+    outputElement.style.backgroundColor = "#e0e0e0";
+    outputElement.style.color = "#333";
+    outputElement.innerHTML = `🏁 Час вичерпано (${seconds} сек).<br>Всього генерацій: ${count - 1}. Роботу завершено!`;
+}
+
+function startLabTimer() {
+    const timeoutInput = document.getElementById('labTimeout').value;
+    const seconds = parseInt(timeoutInput) || 5;
+    const outputElement = document.getElementById('labOutput');
+
+    const colors = ["#f44336", "#4caf50", "#2196f3", "#9c27b0", "#ff9800"];
+    
+    const myGenerator = colorCycleGenerator(colors);
+    
+    consumeWithTimeoutUI(myGenerator, seconds, outputElement);
+}
