@@ -466,3 +466,72 @@ async function runDataStreamImport() {
         outputBox.innerHTML = `<span style="color: red;">[Помилка стріму]: ${err.message}</span>`;
     }
 }
+let loggerUnsubscribe = null;
+let alertUnsubscribe = null;
+
+function entityLoggerComponent(data) {
+    const output = document.getElementById('reactiveOutput');
+    const time = new Date().toLocaleTimeString();
+    output.innerHTML += `<br><span style="color: #aaa;">[${time}] 📝 ЛОГЕР: Отримано подію від "${data.sender}". Дія: ${data.action}</span>`;
+    output.scrollTop = output.scrollHeight;
+}
+
+function entityAlertComponent(data) {
+    if (data.status === 'danger') {
+        const output = document.getElementById('reactiveOutput');
+        const time = new Date().toLocaleTimeString();
+        output.innerHTML += `<br><span style="color: #ff4444; font-weight: bold;">[${time}] 🚨 СЛУЖБА БЕЗПЕКИ: УВАГА! Тварині "${data.sender}" загрожує небезпека через продукт "${data.target}"!</span>`;
+        output.scrollTop = output.scrollHeight;
+    }
+}
+
+function toggleSubscription(entity) {
+    if (!window.entityEventBus) return;
+
+    if (entity === 'logger') {
+        const isChecked = document.getElementById('subLogger').checked;
+        if (isChecked && !loggerUnsubscribe) {
+            loggerUnsubscribe = window.entityEventBus.subscribe('pet_action', entityLoggerComponent);
+        } else if (!isChecked && loggerUnsubscribe) {
+            loggerUnsubscribe();
+            loggerUnsubscribe = null;
+        }
+    } 
+    else if (entity === 'alert') {
+        const isChecked = document.getElementById('subAlert').checked;
+        if (isChecked && !alertUnsubscribe) {
+            alertUnsubscribe = window.entityEventBus.subscribe('pet_action', entityAlertComponent);
+        } else if (!isChecked && alertUnsubscribe) {
+            alertUnsubscribe();
+            alertUnsubscribe = null;
+        }
+    }
+}
+
+function triggerEntityMessage() {
+    if (!window.entityEventBus) return;
+
+    const petType = document.getElementById('petType').value || 'Невідома тварина';
+
+    const actions = [
+        { action: 'перевіряє раціон', target: 'Авокадо', status: 'danger' },
+        { action: 'шукає смаколики', target: 'Морква', status: 'safe' },
+        { action: 'випадково понюхав', target: 'Шоколад', status: 'danger' },
+        { action: 'снідає', target: 'Листя липи', status: 'safe' }
+    ];
+    const randomAction = actions[Math.floor(Math.random() * actions.length)];
+
+    window.entityEventBus.emit('pet_action', {
+        sender: petType,
+        action: randomAction.action,
+        target: randomAction.target,
+        status: randomAction.status
+    });
+}
+
+setTimeout(() => {
+    if (window.entityEventBus) {
+        loggerUnsubscribe = window.entityEventBus.subscribe('pet_action', entityLoggerComponent);
+        alertUnsubscribe = window.entityEventBus.subscribe('pet_action', entityAlertComponent);
+    }
+}, 500);
