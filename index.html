@@ -179,21 +179,6 @@
         Очікування запуску асинхронної генерації...
     </div>
 </div>
-<div style="margin-top: 30px; padding: 15px; border: 2px dashed #4CAF50; border-radius: 8px; background: #fafafa;">
-    <h2 style="margin-top: 0; color: #4CAF50; font-size: 1.2em;">📦 Потоковий імпорт великих баз даних</h2>
-    <p style="font-size: 0.9em; color: #666;">Симуляція обробки величезного масиву продуктів (15,000 записів) без перевантаження пам'яті через <code>Async Iterator</code>.</p>
-    
-    <div style="margin-bottom: 10px;">
-        <label for="streamLimit">Кількість елементів для імпорту:</label>
-        <input type="number" id="streamLimit" value="15000" min="1000" max="100000" style="padding: 6px; width: 100px; display: inline-block; margin-left: 10px;">
-    </div>
-
-    <button onclick="runDataStreamImport()" style="margin: 0; padding: 10px; background: #4CAF50; color: white; border: none; font-weight: bold; cursor: pointer;">💾 Запустити потоковий імпорт</button>
-
-    <div id="streamOutput" style="margin-top: 10px; padding: 10px; min-height: 50px; background: #eee; border-radius: 4px; font-size: 0.9em; color: #333; font-family: monospace;">
-        Система готова до потокового завантаження...
-    </div>
-</div>
 <div style="margin-top: 30px; padding: 15px; border: 2px dashed #ff5722; border-radius: 8px; background: #fafafa;">
     <h2 style="margin-top: 0; color: #ff5722; font-size: 1.2em;">🔔 Реактивна система подій (Pub/Sub)</h2>
     <p style="font-size: 0.9em; color: #666;">Сутності додатку реагують на повідомлення через <code>EventEmitter</code>.</p>
