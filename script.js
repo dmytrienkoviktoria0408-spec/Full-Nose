@@ -256,3 +256,58 @@ function startLabTimer() {
     
     consumeWithTimeoutUI(myGenerator, seconds, outputElement);
 }
+function coreSearchProduct(petType, productName) {
+    if (!window.safetyData || !window.safetyData[petType]) return null;
+    
+    const products = window.safetyData[petType].products;
+    return products.find(p => p.name.toLowerCase() === productName.toLowerCase()) || null;
+}
+
+const memoizedSearchProduct = memoize(coreSearchProduct, {
+    limit: 3,
+    strategy: "LRU",
+    ttl: 30000
+});
+
+function checkProductSafety() {
+    const petType = document.getElementById('petType').value;
+    const productName = document.getElementById('productNameInput').value.trim();
+    const resBox = document.getElementById('results');
+    
+    if (!petType) {
+        alert("Будь ласка, оберіть вашу тваринку у списку вище!");
+        return;
+    }
+
+    if (!productName) {
+        alert("Будь ласка, введіть назву продукту для перевірки!");
+        return;
+    }
+
+    const result = memoizedSearchProduct(petType, productName);
+    
+    resBox.style.display = 'block';
+    
+    if (result) {
+        let statusBadge = "";
+        if (result.status === "safe") statusBadge = "<span style='color: green;'>🍏 Безпечно</span>";
+        else if (result.status === "danger") statusBadge = "<span style='color: red;'>❌ Смертельно небезпечно!</span>";
+        else if (result.status === "caution" || result.status === "warning") statusBadge = "<span style='color: orange;'>⚠️ Обережно</span>";
+        else statusBadge = result.status;
+
+        resBox.innerHTML = `
+            <h3>Результат експрес-пошуку:</h3>
+            <p><strong>Продукт:</strong> ${result.name}</p>
+            <p><strong>Статус:</strong> ${statusBadge}</p>
+            <p><strong>Аналітика:</strong> ${result.info}</p>
+            <div style="font-size: 0.8em; color: #666; margin-top: 10px; border-top: 1px solid #ccc; padding-top: 5px;">
+                * Стан кешування та витіснення елементів дивіться у вкладці "Console" (F12)
+            </div>
+        `;
+    } else {
+        resBox.innerHTML = `
+            <h3>Результат експрес-пошуку:</h3>
+            <p style="color: #555;">Продукт "<strong>${productName}</strong>" відсутній у базі для обраного типу тварини.</p>
+        `;
+    }
+}
