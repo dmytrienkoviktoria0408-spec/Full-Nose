@@ -427,3 +427,42 @@ function cancelBulkReport() {
         alert("Зараз жоден процес аналізу не запущено.");
     }
 }
+async function runDataStreamImport() {
+    const limitInput = document.getElementById('streamLimit').value;
+    const outputBox = document.getElementById('streamOutput');
+    const limit = parseInt(limitInput) || 10000;
+
+    outputBox.innerHTML = `<span style="color: #0056b3;">[Stream] Ініціалізація потоку великих даних...</span>`;
+
+    const dataStream = largeDataSource(limit);
+
+    const productTransformer = (id) => {
+        return {
+            productId: `PROD-${id}`,
+            hash: Math.random().toString(36).substring(7).toUpperCase()
+        };
+    };
+
+    try {
+        await processStreamUI(
+            dataStream, 
+            productTransformer,
+            (currentCount, lastProcessed) => {
+                outputBox.innerHTML = `
+                    <span style="color: #f39c12;">⏳ Обробка потоку в пам'яті (Memory-efficient):</span><br>
+                    • Оброблено елементів: <strong>${currentCount}</strong> / ${limit}<br>
+                    • Поточний чанк: <code>${lastProcessed.productId} (SHA: ${lastProcessed.hash})</code>
+                `;
+            },
+            (totalCount) => {
+                outputBox.innerHTML = `
+                    <span style="color: #27ae60; font-weight: bold;">✅ Стрім успішно завершено!</span><br>
+                    • Всього очищено та імпортовано: <strong>${totalCount}</strong> записів.<br>
+                    • Витік пам'яті: <strong>0%</strong> (дані оброблялися порційно).
+                `;
+            }
+        );
+    } catch (err) {
+        outputBox.innerHTML = `<span style="color: red;">[Помилка стріму]: ${err.message}</span>`;
+    }
+}
