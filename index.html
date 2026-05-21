@@ -130,7 +130,39 @@
         Очікування запуску...
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+<div style="margin-top: 30px; padding: 15px; border: 2px dashed #2196F3; border-radius: 8px; background: #fafafa;">
+    <h2 style="margin-top: 0; color: #2196F3; font-size: 1.2em;">📊 Пріоритетна черга аналітики їжі</h2>
+    <p style="font-size: 0.9em; color: #666;">Кожен ваш пошук продукту автоматично реєструється в черзі з пріоритетом небезпеки.</p>
+    
+    <div style="font-size: 0.95em; margin-bottom: 10px;">
+        Елементів у черзі: <span id="queueCount" style="font-weight: bold; color: #2196F3;">0</span>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        <span style="font-size: 0.85em; display:block; margin-bottom:2px; color:#555;">🔍 Підглянути (Peek):</span>
+        <div style="display: flex; gap: 5px;">
+            <button onclick="handleQueueAction('peek', 'highest')" style="padding: 5px; background: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; font-size: 0.85em; margin: 0; cursor:pointer;">⚠️ Найнебезпечніший</button>
+            <button onclick="handleQueueAction('peek', 'lowest')" style="padding: 5px; background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; font-size: 0.85em; margin: 0; cursor:pointer;">🍏 Найбезпечніший</button>
+            <button onclick="handleQueueAction('peek', 'oldest')" style="padding: 5px; background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; font-size: 0.85em; margin: 0; cursor:pointer;">🕒 Найстаріший</button>
+            <button onclick="handleQueueAction('peek', 'newest')" style="padding: 5px; background: #f3e5f5; color: #4a148c; border: 1px solid #e1bee7; font-size: 0.85em; margin: 0; cursor:pointer;">🆕 Найновіший</button>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <span style="font-size: 0.85em; display:block; margin-bottom:2px; color:#555;">📥 Витягти з черги (Dequeue):</span>
+        <div style="display: flex; gap: 5px;">
+            <button onclick="handleQueueAction('dequeue', 'highest')" style="padding: 5px; background: #d32f2f; color: white; border: none; font-size: 0.85em; margin: 0; cursor:pointer;">⚠️ Вилучити Топ-Загрозу</button>
+            <button onclick="handleQueueAction('dequeue', 'lowest')" style="padding: 5px; background: #388e3c; color: white; border: none; font-size: 0.85em; margin: 0; cursor:pointer;">🍏 Вилучити Безпечний</button>
+            <button onclick="handleQueueAction('dequeue', 'oldest')" style="padding: 5px; background: #f57c00; color: white; border: none; font-size: 0.85em; margin: 0; cursor:pointer;">🕒 Обробити Перший</button>
+            <button onclick="handleQueueAction('dequeue', 'newest')" style="padding: 5px; background: #7b1fa2; color: white; border: none; font-size: 0.85em; margin: 0; cursor:pointer;">🆕 Скасувати Останній</button>
+        </div>
+    </div>
+
+    <div id="queueResult" style="padding: 10px; min-height: 30px; background: #eee; border-radius: 4px; font-size: 0.9em; color: #333; font-style: italic; text-align: center;">
+        Черга порожня або операцій ще не проводилось
+    </div>
+</div>
+</div> <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <script src="Data/birds.js"></script>
 <script src="Data/exotics.js"></script>
@@ -140,6 +172,54 @@
 <script src="Data/reptiles&amphibians.js"></script>
 
 <script src="memoize.js"></script>
+
+<script>
+class BiDirectionalPriorityQueue {
+  constructor() {
+    this.elements = [];
+    this.counter = 0;
+  }
+
+  enqueue(item, priority) {
+    this.elements.push({ item, priority, id: this.counter++ });
+  }
+
+  _getTargetIndex(type) {
+    if (this.elements.length === 0) return -1;
+
+    let targetIdx = 0;
+    for (let i = 1; i < this.elements.length; i++) {
+      const current = this.elements[i];
+      const best = this.elements[targetIdx];
+
+      let isBetter = false;
+      switch (type) {
+        case 'highest': isBetter = current.priority > best.priority; break;
+        case 'lowest':  isBetter = current.priority < best.priority; break;
+        case 'oldest':  isBetter = current.id < best.id; break;
+        case 'newest':  isBetter = current.id > best.id; break;
+      }
+
+      if (isBetter) targetIdx = i;
+    }
+    return targetIdx;
+  }
+
+  dequeue(type) {
+    const index = this._getTargetIndex(type);
+    if (index === -1) return null;
+    return this.elements.splice(index, 1)[0].item;
+  }
+
+  peek(type) {
+    const index = this._getTargetIndex(type);
+    if (index === -1) return null;
+    return this.elements[index].item;
+  }
+}
+
+window.notificationQueue = new BiDirectionalPriorityQueue();
+</script>
 
 <script src="script.js"></script>
 <footer style="margin-top: 30px; text-align: center; font-size: 0.85em; color: #777; border-top: 1px solid #ddd; padding-top: 15px;">

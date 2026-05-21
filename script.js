@@ -304,10 +304,67 @@ function checkProductSafety() {
                 * Стан кешування та витіснення елементів дивіться у вкладці "Console" (F12)
             </div>
         `;
+    if (result && window.notificationQueue) {
+    let priority = 10;
+    
+        if (result.status === "danger") {
+           priority = 100;
+        } else if (result.status === "caution" || result.status === "warning") {
+            priority = 50;
+        }
+
+        const queueItem = {
+            pet: petType,
+            product: result.name,
+            status: result.status,
+            info: result.info
+        };
+
+        window.notificationQueue.enqueue(queueItem, priority);
+    
+        const qCountEl = document.getElementById('queueCount');
+        if (qCountEl) {
+            qCountEl.innerText = window.notificationQueue.elements.length;
+        }
+    }
     } else {
         resBox.innerHTML = `
             <h3>Результат експрес-пошуку:</h3>
             <p style="color: #555;">Продукт "<strong>${productName}</strong>" відсутній у базі для обраного типу тварини.</p>
         `;
     }
+}
+function handleQueueAction(action, type) {
+    if (!window.notificationQueue) return;
+
+    const resBox = document.getElementById('queueResult');
+    const qCountEl = document.getElementById('queueCount');
+    
+    let item = null;
+    let actionText = action === 'peek' ? '👀 Підглянуто' : '📥 Вилучено';
+
+    if (action === 'peek') {
+        item = window.notificationQueue.peek(type);
+    } else {
+        item = window.notificationQueue.dequeue(type);
+    }
+
+    if (qCountEl) {
+        qCountEl.innerText = window.notificationQueue.elements.length;
+    }
+
+    if (!item) {
+        resBox.innerHTML = `<span style="color: #777;">Черга порожня для критерію "${type}"</span>`;
+        return;
+    }
+
+    let statusEmoji = "🍏";
+    if (item.status === "danger") statusEmoji = "❌ Смертельно!";
+    else if (item.status === "warning" || item.status === "caution") statusEmoji = "⚠️ Обережно";
+
+    resBox.innerHTML = `
+        <strong>${actionText} (${type}):</strong><br>
+        🐾 Тварина: <code>${item.pet}</code> | 🥑 Продукт: <strong>${item.product}</strong><br>
+        Статус: ${statusEmoji} | <small>${item.info}</small>
+    `;
 }
