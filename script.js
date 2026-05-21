@@ -368,3 +368,62 @@ function handleQueueAction(action, type) {
         Статус: ${statusEmoji} | <small>${item.info}</small>
     `;
 }
+async function generateBulkReport() {
+    const petType = document.getElementById('petType').value;
+    const inputVal = document.getElementById('bulkProducts').value;
+    const outputBox = document.getElementById('bulkReportOutput');
+
+    if (!petType) {
+        alert("Будь ласка, спочатку оберіть тваринку вгорі сторінки!");
+        return;
+    }
+    if (!inputVal.trim()) {
+        alert("Введіть хоча б один продукт!");
+        return;
+    }
+
+    const productsArray = inputVal.split(',').map(p => p.trim()).filter(p => p.length > 0);
+
+    reportAbortController = new AbortController();
+    
+    outputBox.innerHTML = `<span style="color: #007bff;">⏳ Асинхронний аналіз запущено... Опрацьовуємо ${productsArray.length} елементів через mapPromise. Спробуйте натиснути "Скасувати"!</span>`;
+
+    try {
+        const reportData = await mapPromise(productsArray, async (product) => {
+            return await asyncCheckProduct(product, petType);
+        }, { signal: reportAbortController.signal });
+
+        let htmlResult = `<strong style="color: #4CAF50;">✅ Звіт сформовано успішно:</strong><ul style="padding-left: 20px; margin-top: 5px;">`;
+        
+        reportData.forEach(item => {
+            let statusText = "❔ Невідомо";
+            let color = "#555";
+            
+            if (item.result) {
+                if (item.result.status === 'safe') { statusText = "🍏 Безпечно"; color = "green"; }
+                else if (item.result.status === 'danger') { statusText = "❌ Смертельно!"; color = "red"; }
+                else { statusText = "warning"; statusText = "⚠️ Обережно"; color = "orange"; }
+            } else {
+                statusText = "🔍 Продукт не знайдено в базі";
+            }
+            
+            htmlResult += `<li><strong>${item.name}</strong> — <span style="color: ${color}; font-weight:bold;">${statusText}</span></li>`;
+        });
+        
+        htmlResult += `</ul>`;
+        outputBox.innerHTML = htmlResult;
+
+    } catch (error) {
+        outputBox.innerHTML = `<span style="color: #f44336; font-weight: bold;">❌ Помилка: ${error.message}</span>`;
+    } finally {
+        reportAbortController = null;
+    }
+}
+
+function cancelBulkReport() {
+    if (reportAbortController) {
+        reportAbortController.abort();
+    } else {
+        alert("Зараз жоден процес аналізу не запущено.");
+    }
+}

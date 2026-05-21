@@ -162,6 +162,23 @@
         Черга порожня або операцій ще не проводилось
     </div>
 </div>
+<div style="margin-top: 30px; padding: 15px; border: 2px dashed #9c27b0; border-radius: 8px; background: #fafafa;">
+    <h2 style="margin-top: 0; color: #9c27b0; font-size: 1.2em;">⚡ Асинхронний експрес-аналіз списку</h2>
+    <p style="font-size: 0.9em; color: #666;">Введіть кілька продуктів через кому, щоб протестувати асинхронний <code>mapPromise</code> з підтримкою відміни.</p>
+    
+    <div style="margin-bottom: 10px;">
+        <input type="text" id="bulkProducts" value="яблуко, авокадо, шоколад, морква" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="Продукти через кому...">
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <button onclick="generateBulkReport()" style="margin: 0; padding: 10px; background: #9c27b0; color: white; border: none; font-weight: bold; cursor: pointer; flex: 2;">⚙️ Запустити аналіз (Async/Await)</button>
+        <button onclick="cancelBulkReport()" style="margin: 0; padding: 10px; background: #f44336; color: white; border: none; font-weight: bold; cursor: pointer; flex: 1;">🛑 Скасувати</button>
+    </div>
+
+    <div id="bulkReportOutput" style="padding: 10px; min-height: 40px; background: #eee; border-radius: 4px; font-size: 0.9em; color: #333;">
+        Очікування запуску асинхронної генерації...
+    </div>
+</div>
 </div> <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <script src="Data/birds.js"></script>
@@ -221,10 +238,12 @@ class BiDirectionalPriorityQueue {
 window.notificationQueue = new BiDirectionalPriorityQueue();
 </script>
 
+<script src="async-report.js"></script>
+
 <script src="script.js"></script>
 <footer style="margin-top: 30px; text-align: center; font-size: 0.85em; color: #777; border-top: 1px solid #ddd; padding-top: 15px;">
         <p>&copy; 2026 Full Nose. Всі права захищено.</p>
-        <p>Розробники: [Ваше Ім'я або Команда] | Ліцензія <a href="LICENSE" target="_blank" style="color: #2196F3; text-decoration: none;">MIT</a></p>
+        <p>Розробники: Дмитрієнко Вікторія | Ліцензія <a href="LICENSE" target="_blank" style="color: #2196F3; text-decoration: none;">MIT</a></p>
     </footer>
 </body>
 </html>
